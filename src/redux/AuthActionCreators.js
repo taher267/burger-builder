@@ -9,6 +9,7 @@ export const authSuccess = (token, userId) => ({
     }
 })
 export const auth = (email, password, mode) => dispatch => {
+    dispatch(authLoading(true));
     const authData = {
         email: email,
         password: password,
@@ -27,6 +28,7 @@ export const auth = (email, password, mode) => dispatch => {
     axios.post(authUrl + API_KEY, authData)
         .then(res => res.data)
         .then(data => {
+            dispatch(authLoading(false));
             const expirationTime = new Date(new Date().getTime() + data.expiresIn * 1000);
             localStorage.setItem('token', data.idToken);
             localStorage.setItem('userId', data.localId);
@@ -34,12 +36,14 @@ export const auth = (email, password, mode) => dispatch => {
 
             dispatch(authSuccess(data.idToken, data.localId));
 
-        }
-        )
-        .catch(err => dispatch(authenticationFail(err.message)))
+        })
+        .catch(err => {
+            dispatch(authFailed(err.response.data.error.message));
+            dispatch(authLoading(false));
+        });
 
 }
-export const authenticationFail = message => ({
+export const authFailed = message => ({
     type: ActionTypes.AUTH_FAILED,
     payload: message
 });
@@ -66,5 +70,12 @@ export const logout = () => {
     localStorage.removeItem("userId");
     return {
         type: ActionTypes.AUTH_LOGOUT
+    }
+}
+
+export const authLoading = isLoading => {
+    return {
+        type: ActionTypes.AUTH_LOADING,
+        payload: isLoading
     }
 }

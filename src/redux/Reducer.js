@@ -103,7 +103,7 @@ const AuthReducer = (state = initAuthState, action) => {
         case ActionTypes.AUTH_LOADING:
             return {
                 ...state,
-                authLoading: true
+                authLoading: action.payload
             }
         case ActionTypes.AUTH_LOGOUT:
             return {

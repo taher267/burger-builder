@@ -1,37 +1,51 @@
 import { Formik } from "formik";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Button, Form, FormGroup, Input, Modal } from "reactstrap";
+import { Button, Form, FormGroup, Input } from "reactstrap";
 import { auth } from "../../redux/AuthActionCreators";
+import { Spinner } from "../Orders/Checkout/Spinner/Spinner";
 import './Auth.css';
+import 'bootstrap/dist/js/bootstrap.min';
 const mapStateToProps = state => ({
-    authfail: state.auth.authFail,
     token: state.auth.token,
     userId: state.auth.userId,
+    authLoading: state.auth.authLoading,
+    authfail: state.auth.authFail,
 });
 const mapDispatchToProps = dispatch => {
     return {
-        auth: (email, password, mode) => dispatch(auth(email, password, mode))
+        auth: (email, password, mode) => dispatch(auth(email, password, mode)),
+
     }
 }
 
 class Auth extends Component {
-    state = { mode: "Sign Up", modalOpen: false }
+    state = { mode: "Sign Up", modalOpen: false, authFail: null, dismiss: true }
     modeHandler = () => {
         this.setState({ mode: this.state.mode === "Sign Up" ? "Login" : "Sign Up" });
     }
     modalHandler = () => {
-        this.setState({ modalOpen: !this.state.modalOpen })
+        this.setState({ modalOpen: !this.state.modalOpen });
     }
-    messageHandler = () => {
+    alertHandler = () => {
+        this.setState({ dismiss: !this.state.dismiss });
+    }
+
+    componentDidMount() {
         if (this.props.authfail !== null) {
-            return <Modal isOpen={this.state.modalOpen}>failded</Modal>
+            this.setState({ modalOpen: true });
         }
 
     }
     render() {
+        if (this.props.authLoading) return <Spinner />;
 
-        this.messageHandler();
+        // if (this.props.authfail !== null) return <Modal isOpen={true} centered ><ModalBody className="bg-danger fw-bold text-light text-center">{this.props.authfail}</ModalBody></Modal>;
+        let failmessage = null;
+        if (this.props.authfail !== null) {
+            failmessage = <div className="alert alert-warning alert-dismissible"><strong></strong>{this.props.authfail}<span className="btn-close" data-bs-dismiss="alert"></span></div>;
+        }
+
 
         return <div className="container">
             <div className="row py-5">
@@ -95,9 +109,10 @@ class Auth extends Component {
                                         {errors.passwordConfirm ? (<div className="invalid-feedback">{errors.passwordConfirm}</div>) : null}
                                     </FormGroup>
                                     : null}
-
-
+                                {/* Error message */}
+                                {failmessage}
                                 <Button type="submit">{this.state.mode === "Sign Up" ? "Sign Up" : "Login"} <span className="fa fa-arrow-right"></span></Button>
+
                             </Form>
                         </div>}
                     </Formik>
