@@ -17,6 +17,7 @@ const Header = props => {
         links = (<>
             <NavItem><NavLink className="nav-link" exact to="/">burger builder</NavLink></NavItem>
             <NavItem><NavLink className="nav-link" exact to="/orders">orders</NavLink></NavItem>
+            <NavItem className="ms-auto me-3"><NavLink className="nav-link" exact to="/logout">Logout</NavLink></NavItem>
         </>)
     }
     return (<Navbar container expand="md" dark color="dark">

@@ -82,6 +82,7 @@ const ingredentReducer = (state = initState, action) => {
             }
         case ActionTypes.LOAD_ORDER_FAILED:
             return { ...state, orderErr: true, orderLoading: false }
+
         default:
             return state;
     }
@@ -104,7 +105,14 @@ const AuthReducer = (state = initAuthState, action) => {
                 ...state,
                 authLoading: true
             }
+        case ActionTypes.AUTH_LOGOUT:
+            return {
+                ...state,
+                token: null,
+                userId: null,
+                authFail: null,
 
+            }
         default:
             return state;
     }

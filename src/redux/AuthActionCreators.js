@@ -26,11 +26,45 @@ export const auth = (email, password, mode) => dispatch => {
 
     axios.post(authUrl + API_KEY, authData)
         .then(res => res.data)
-        .then(data => dispatch(authSuccess(data.idToken, data.localId)))
+        .then(data => {
+            const expirationTime = new Date(new Date().getTime() + data.expiresIn * 1000);
+            localStorage.setItem('token', data.idToken);
+            localStorage.setItem('userId', data.localId);
+            localStorage.setItem('expirationTime', expirationTime);
+
+            dispatch(authSuccess(data.idToken, data.localId));
+
+        }
+        )
         .catch(err => dispatch(authenticationFail(err.message)))
 
 }
 export const authenticationFail = message => ({
     type: ActionTypes.AUTH_FAILED,
     payload: message
-})
+});
+
+export const authCheck = () => dispatch => {
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
+    const expirationTime = localStorage.getItem('expirationTime');
+    if (!token) {
+        dispatch(logout());
+    } else {
+        if (expirationTime <= new Date()) {
+            dispatch(logout());
+        } else {
+            dispatch(authSuccess(token, userId));
+        }
+
+    }
+}
+
+export const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("expirationTime");
+    localStorage.removeItem("userId");
+    return {
+        type: ActionTypes.AUTH_LOGOUT
+    }
+}
