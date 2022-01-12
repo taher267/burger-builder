@@ -17,7 +17,7 @@ class Logout extends Component {
         this.props.logout();
     }
     componentDidMount() {
-        console.log(this.props);
+        // console.log(this.props);
     }
     render() {
         return (<Modal isOpen={this.state.modalOpen}>

@@ -9,13 +9,12 @@ export const authSuccess = (token, userId) => ({
     }
 })
 export const auth = (email, password, mode) => dispatch => {
-    dispatch(authLoading(true));
+    // dispatch(authLoading(true));
     const authData = {
         email: email,
         password: password,
         returnSecureToken: true
     }
-    // console.log(mode);
     const API_KEY = "AIzaSyB6Suz_O0LBmx9Cbg_aX_qCMwwB5VE6IXY";
 
     let authUrl = null;
@@ -38,7 +37,12 @@ export const auth = (email, password, mode) => dispatch => {
 
         })
         .catch(err => {
-            dispatch(authFailed(err.response.data.error.message));
+            if (err.message === 'Network Error') {
+                dispatch(authFailed(err.message));
+            }
+            if (err.response) {
+                dispatch(authFailed(err.response.data.error.message));
+            }
             dispatch(authLoading(false));
         });
 

@@ -1,11 +1,10 @@
 import { Formik } from "formik";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Button, Form, FormGroup, Input } from "reactstrap";
+import { Button, Form, FormGroup, Input, UncontrolledAlert } from "reactstrap";
 import { auth } from "../../redux/AuthActionCreators";
 import { Spinner } from "../Orders/Checkout/Spinner/Spinner";
 import './Auth.css';
-import 'bootstrap/dist/js/bootstrap.min';
 const mapStateToProps = state => ({
     token: state.auth.token,
     userId: state.auth.userId,
@@ -42,12 +41,11 @@ class Auth extends Component {
 
         // if (this.props.authfail !== null) return <Modal isOpen={true} centered ><ModalBody className="bg-danger fw-bold text-light text-center">{this.props.authfail}</ModalBody></Modal>;
         let failmessage = null;
-        if (this.props.authfail !== null) {
-            failmessage = <div className="alert alert-warning alert-dismissible"><strong></strong>{this.props.authfail}<span className="btn-close" data-bs-dismiss="alert"></span></div>;
-        }
+        if (this.props.authfail !== null) failmessage = <UncontrolledAlert color="danger" className="danger fw-bold">{this.props.authfail}</UncontrolledAlert>;
 
 
         return <div className="container">
+
             <div className="row py-5">
                 <div className="col-md-6"></div>
                 <div className="col-md-6">

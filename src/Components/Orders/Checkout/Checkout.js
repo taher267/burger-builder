@@ -10,7 +10,9 @@ import { Spinner } from "./Spinner/Spinner";
 const mapStateToProps = state => ({
     ingredents: state.builder.ingredents,
     purchasable: state.builder.purchasable,
-    totalPrice: state.builder.totalPrice
+    totalPrice: state.builder.totalPrice,
+    token: state.auth.token,
+    userId: state.auth.userId,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -31,9 +33,10 @@ class Checkout extends Component {
             ingredents: this.props.ingredents,
             customer: customerInfo,
             price: this.props.totalPrice,
-            orderTime: new Date()
+            orderTime: new Date(),
+            userId: this.props.userId
         }
-        axios.post(BaseUrl + 'orders.json', order)
+        axios.post(BaseUrl + 'orders.json?auth=' + this.props.token, order)
             .then(res => {
                 if (res.status === 200) {
                     this.setState({ isLoading: false, message: { ...this.state.message, alert: true, text: "Order has been placed!", type: "success" } });
@@ -64,8 +67,7 @@ class Checkout extends Component {
         if (!this.props.purchasable) return this.goBack();
     }
     render() {
-
-        if (!this.props.purchasable) return <Alert><h3>You have to login or added Ingredent first!</h3></Alert>;
+        // if (!this.props.purchasable) return <Alert><h3>Add some Ingredent first!</h3></Alert>;
         if (this.state.isLoading) return <Spinner />;
 
         return <div className="container">

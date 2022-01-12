@@ -7,11 +7,13 @@ import OrderItem from "./OrderItem";
 const mapStateToProps = state => ({
     orders: state.builder.orders,
     orderLoading: state.builder.orderLoading,
-    orderErr: state.builder.orderErr
+    orderErr: state.builder.orderErr,
+    token: state.auth.token,
+    userId: state.auth.userId,
 })
 
 const mapDispatchToProps = dispatch => ({
-    fetchOrders: () => dispatch(fetchOrders())
+    fetchOrders: (token, userId) => dispatch(fetchOrders(token, userId))
 });
 
 class Orders extends Component {
@@ -20,7 +22,7 @@ class Orders extends Component {
         noDataModal: false
     }
     componentDidMount() {
-        this.props.fetchOrders();
+        this.props.fetchOrders(this.props.token, this.props.userId);
         if (this.props.orderErr) {
             this.setState({ errorModal: true })
         }
